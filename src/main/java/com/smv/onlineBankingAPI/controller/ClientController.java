@@ -2,6 +2,7 @@ package com.smv.onlineBankingAPI.controller;
 
 import com.smv.onlineBankingAPI.service.AccountTransactions;
 import com.smv.onlineBankingAPI.web.response.BalanceResponse;
+import com.smv.onlineBankingAPI.web.response.SuccessfulResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +20,22 @@ public class ClientController {
     }
 
     @GetMapping(value = "/getBalance",
-                produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public BalanceResponse getBalance(@RequestParam(name = "id") Long clientId) {
         return accountTransactions.getBalance(clientId);
+    }
+
+    @GetMapping(value = "/takeMoney",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessfulResponse takeMoney(@RequestParam(name = "id") Long clientId,
+                                        @RequestParam(name = "cash") BigDecimal cash) {
+        return accountTransactions.takeMoney(clientId, cash);
+    }
+
+    @GetMapping(value = "/putMoney",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessfulResponse putMoney(@RequestParam(name = "id") Long clientId,
+                                       @RequestParam(name = "cash") BigDecimal cash) {
+        return accountTransactions.putMoney(clientId, cash);
     }
 }

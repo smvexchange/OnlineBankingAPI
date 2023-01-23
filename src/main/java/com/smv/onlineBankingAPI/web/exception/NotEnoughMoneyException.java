@@ -1,7 +1,8 @@
 package com.smv.onlineBankingAPI.web.exception;
 
-import lombok.Data;
+import lombok.Getter;
 
+@Getter
 public class NotEnoughMoneyException extends RuntimeException {
     private final int statusCode;
 

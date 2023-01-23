@@ -1,4 +1,7 @@
-
+CREATE TABLE clients(
+    id identity primary key,
+    balance numeric not null
+);
 
 INSERT INTO clients VALUES (1, 5000.34);
 INSERT INTO clients VALUES (2, 0.00);
