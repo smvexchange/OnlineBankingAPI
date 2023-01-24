@@ -6,8 +6,8 @@ import lombok.Getter;
 public class NoSuchClientException extends RuntimeException {
     private final int statusCode;
 
-    public NoSuchClientException(String message) {
+    public NoSuchClientException(String message, int statusCode) {
         super(message);
-        this.statusCode = -1;
+        this.statusCode = statusCode;
     }
 }

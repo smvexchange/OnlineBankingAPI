@@ -6,8 +6,8 @@ import lombok.Getter;
 public class NotEnoughMoneyException extends RuntimeException {
     private final int statusCode;
 
-    public NotEnoughMoneyException(String message) {
+    public NotEnoughMoneyException(String message, int statusCode) {
         super(message);
-        this.statusCode = 1;
+        this.statusCode = statusCode;
     }
 }

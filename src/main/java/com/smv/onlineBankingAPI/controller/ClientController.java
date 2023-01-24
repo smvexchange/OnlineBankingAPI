@@ -1,9 +1,12 @@
 package com.smv.onlineBankingAPI.controller;
 
 import com.smv.onlineBankingAPI.service.AccountTransactions;
+import com.smv.onlineBankingAPI.web.exception.NoSuchClientException;
 import com.smv.onlineBankingAPI.web.response.BalanceResponse;
-import com.smv.onlineBankingAPI.web.response.SuccessfulResponse;
+import com.smv.onlineBankingAPI.web.response.BaseResponse;
+import com.smv.onlineBankingAPI.web.response.FailedResponse;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,15 +30,15 @@ public class ClientController {
 
     @GetMapping(value = "/takeMoney",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessfulResponse takeMoney(@RequestParam(name = "id") Long clientId,
+    public BaseResponse takeMoney(@RequestParam(name = "id") Long clientId,
                                         @RequestParam(name = "cash") BigDecimal cash) {
         return accountTransactions.takeMoney(clientId, cash);
     }
 
     @GetMapping(value = "/putMoney",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessfulResponse putMoney(@RequestParam(name = "id") Long clientId,
-                                       @RequestParam(name = "cash") BigDecimal cash) {
+    public BaseResponse putMoney(@RequestParam(name = "id") Long clientId,
+                                 @RequestParam(name = "cash") BigDecimal cash) {
         return accountTransactions.putMoney(clientId, cash);
     }
 }
