@@ -6,7 +6,6 @@ import com.smv.onlineBankingAPI.web.exception.NoSuchClientException;
 import com.smv.onlineBankingAPI.web.exception.NotEnoughMoneyException;
 import com.smv.onlineBankingAPI.web.response.BalanceResponse;
 import com.smv.onlineBankingAPI.web.response.BaseResponse;
-import com.smv.onlineBankingAPI.web.response.FailedResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
