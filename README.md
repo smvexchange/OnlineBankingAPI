@@ -1,10 +1,16 @@
 <h1 align="center">API для Интернет-банка</h1>
 
 ***
-![logo][1]
+
+**Структура базы данных:**<br>
+![DB structure][1]
+
+**Описание функциональности**
+- Узнать баланс по ID пользователя;
+- Снятие заданной суммы с баланса пользователя;
+- Пополнение баланса на заданную сумму;
 
 
+__API документацию можно посмотреть по адресу:__ <br> http://localhost:8080/swagger-ui/index.html
 
-
-
-[1]: https://theforage.wpengine.com/wp-content/uploads/2022/07/investment-banking-companies-1024x730.jpg
+[1]: img/bankDB.png
