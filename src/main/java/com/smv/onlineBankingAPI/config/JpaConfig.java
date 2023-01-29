@@ -1,6 +1,7 @@
 package com.smv.onlineBankingAPI.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -17,6 +18,12 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class JpaConfig {
 
+    @Value("${DB_USERNAME}")
+    private String user;
+
+    @Value("${DB_PASSWORD}")
+    private String password;
+
     @Autowired
     private Environment env;
 
@@ -25,8 +32,8 @@ public class JpaConfig {
         DriverManagerDataSource dateSource = new DriverManagerDataSource();
         dateSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
         dateSource.setUrl(env.getProperty("jdbc.url"));
-        dateSource.setUsername(env.getProperty("jdbc.user"));
-        dateSource.setPassword(env.getProperty("jdbc.pass"));
+        dateSource.setUsername(user);
+        dateSource.setPassword(password);
         return dateSource;
     }
 }
