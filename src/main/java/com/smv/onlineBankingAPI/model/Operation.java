@@ -1,22 +1,19 @@
 package com.smv.onlineBankingAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "operations")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Client {
+public class Operation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +21,17 @@ public class Client {
     @JsonProperty(value = "id")
     private Long id;
 
-    @Column(name = "balance")
-    @JsonProperty(value = "balance")
-    private BigDecimal balance;
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    @JsonProperty(value = "clientId")
+    private Client client;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonProperty(value = "operationList")
-    private Set<Operation> operationList;
+    @Column(name = "operationType")
+    @JsonProperty(value = "operationType")
+    private int operationType;
+
+    @Column(name = "amount")
+    @JsonProperty(value = "amount")
+    private BigDecimal amount;
+
 }
