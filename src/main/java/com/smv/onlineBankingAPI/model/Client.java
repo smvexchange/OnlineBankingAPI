@@ -1,13 +1,11 @@
 package com.smv.onlineBankingAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -30,5 +28,15 @@ public class Client {
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonProperty(value = "operationList")
+    @Setter(AccessLevel.NONE)
     private Set<Operation> operationList;
+
+    public void setOperationList(Operation operation) {
+        if (this.operationList == null) {
+            operationList = new HashSet<>();
+            operationList.add(operation);
+        } else {
+            operationList.add(operation);
+        }
+    }
 }
