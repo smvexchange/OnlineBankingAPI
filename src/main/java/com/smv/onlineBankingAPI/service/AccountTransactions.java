@@ -3,7 +3,9 @@ package com.smv.onlineBankingAPI.service;
 import com.smv.onlineBankingAPI.builder.builders.OperationsBuilder;
 import com.smv.onlineBankingAPI.builder.director.Director;
 import com.smv.onlineBankingAPI.model.Client;
+import com.smv.onlineBankingAPI.model.Operation;
 import com.smv.onlineBankingAPI.repository.ClientRepository;
+import com.smv.onlineBankingAPI.web.exception.IllegalParameterException;
 import com.smv.onlineBankingAPI.web.exception.NoSuchClientException;
 import com.smv.onlineBankingAPI.web.exception.NotEnoughMoneyException;
 import com.smv.onlineBankingAPI.web.response.BalanceResponse;
@@ -12,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -58,5 +63,19 @@ public class AccountTransactions {
         clientRepository.save(client);
         log.info("Client# " + clientId + ": Cash deposit was successful complete. Amount: " + cash + ".");
         return new BaseResponse(1);
+    }
+
+    public Set<Operation> getOperationList(Long clientId, LocalDateTime startDate, LocalDateTime endDate) {
+        Client client = clientRepository.findById(clientId).orElseThrow(
+                () -> new NoSuchClientException("Client with id " + clientId + " not found.", 0));
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalParameterException("Start date parameter must be before end date parameter", 0);
+        }
+        Set<Operation> operations = client.getOperationList();
+        operations = operations.stream()
+                .filter(operation -> operation.getLocalDateTime().isAfter(startDate))
+                .filter(operation -> operation.getLocalDateTime().isBefore(endDate))
+                .collect(Collectors.toSet());
+        return operations;
     }
 }

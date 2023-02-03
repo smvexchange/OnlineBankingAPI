@@ -32,7 +32,6 @@ public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @JsonProperty(value = "id")
     private Long id;
 
     @Column(name = "localDateTime")
@@ -41,7 +40,6 @@ public class Operation {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    @JsonProperty(value = "clientId")
     private Client client;
 
     @Column(name = "operationType")
