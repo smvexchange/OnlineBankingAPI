@@ -1,5 +1,6 @@
 package com.smv.onlineBankingAPI.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -27,7 +28,7 @@ public class Client {
     private BigDecimal balance;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonProperty(value = "operationList")
+    @JsonManagedReference
     @Setter(AccessLevel.NONE)
     private Set<Operation> operationList;
 

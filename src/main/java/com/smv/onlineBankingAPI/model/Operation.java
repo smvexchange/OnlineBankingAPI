@@ -1,5 +1,8 @@
 package com.smv.onlineBankingAPI.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smv.onlineBankingAPI.builder.components.OperationType;
 import lombok.EqualsAndHashCode;
@@ -12,11 +15,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "operations")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
+@Table(name = "operations")
 public class Operation {
 
     public Operation(LocalDateTime localDateTime,
@@ -32,6 +35,7 @@ public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonIgnore
     private Long id;
 
     @Column(name = "localDateTime")
@@ -40,6 +44,7 @@ public class Operation {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private Client client;
 
     @Column(name = "operationType")

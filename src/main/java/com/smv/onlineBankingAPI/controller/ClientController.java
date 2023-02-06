@@ -51,10 +51,12 @@ public class ClientController {
     public Set<Operation> getOperationList(@RequestParam(name = "id")
                                                Long clientId,
                                            @RequestParam(name = "startDate", required = false)
-                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME,
+                                                   fallbackPatterns = {"yyyy-MM-dd HH:mm:ss.SSS"})
                                                LocalDateTime startDate,
                                            @RequestParam(name = "endDate", required = false)
-                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME,
+                                                   fallbackPatterns = {"yyyy-MM-dd HH:mm:ss.SSS"})
                                                LocalDateTime endDate) {
         return accountTransactions.getOperationList(clientId, startDate, endDate);
     }

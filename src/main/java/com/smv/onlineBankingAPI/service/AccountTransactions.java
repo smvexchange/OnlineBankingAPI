@@ -68,14 +68,27 @@ public class AccountTransactions {
     public Set<Operation> getOperationList(Long clientId, LocalDateTime startDate, LocalDateTime endDate) {
         Client client = clientRepository.findById(clientId).orElseThrow(
                 () -> new NoSuchClientException("Client with id " + clientId + " not found.", 0));
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalParameterException("Start date parameter must be before end date parameter", 0);
-        }
         Set<Operation> operations = client.getOperationList();
-        operations = operations.stream()
-                .filter(operation -> operation.getLocalDateTime().isAfter(startDate))
-                .filter(operation -> operation.getLocalDateTime().isBefore(endDate))
-                .collect(Collectors.toSet());
+        if (startDate != null && endDate != null) {
+            if (startDate.isBefore(endDate)) {
+                operations = operations.stream()
+                        .filter(operation -> operation.getLocalDateTime().isAfter(startDate))
+                        .filter(operation -> operation.getLocalDateTime().isBefore(endDate))
+                        .collect(Collectors.toSet());
+            } else {
+                throw new IllegalParameterException("Start date parameter must be before end date parameter", 0);
+            }
+        }
+        if (startDate != null) {
+            operations = operations.stream()
+                    .filter(operation -> operation.getLocalDateTime().isAfter(startDate))
+                    .collect(Collectors.toSet());
+        }
+        if (endDate != null) {
+            operations = operations.stream()
+                    .filter(operation -> operation.getLocalDateTime().isBefore(endDate))
+                    .collect(Collectors.toSet());
+        }
         return operations;
     }
 }
