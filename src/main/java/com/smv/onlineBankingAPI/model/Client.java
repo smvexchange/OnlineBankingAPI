@@ -6,7 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -34,7 +34,7 @@ public class Client {
 
     public void setOperationList(Operation operation) {
         if (this.operationList == null) {
-            operationList = new HashSet<>();
+            operationList = new LinkedHashSet<>();
             operationList.add(operation);
         } else {
             operationList.add(operation);

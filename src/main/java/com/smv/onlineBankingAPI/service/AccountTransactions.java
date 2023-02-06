@@ -12,9 +12,13 @@ import com.smv.onlineBankingAPI.web.response.BalanceResponse;
 import com.smv.onlineBankingAPI.web.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,6 +43,7 @@ public class AccountTransactions {
         return new BalanceResponse(client.getBalance());
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {NotEnoughMoneyException.class, NoSuchClientException.class})
     public BaseResponse takeMoney(Long clientId, BigDecimal cash) {
         Client client = clientRepository.findById(clientId).orElseThrow(
                 () -> new NoSuchClientException("Client with id " + clientId + " not found.", 0));
@@ -54,6 +59,7 @@ public class AccountTransactions {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {NoSuchClientException.class})
     public BaseResponse putMoney(Long clientId, BigDecimal cash) {
         Client client = clientRepository.findById(clientId).orElseThrow(
                 () -> new NoSuchClientException("Client with id " + clientId + " not found.", 0));
@@ -68,13 +74,15 @@ public class AccountTransactions {
     public Set<Operation> getOperationList(Long clientId, LocalDateTime startDate, LocalDateTime endDate) {
         Client client = clientRepository.findById(clientId).orElseThrow(
                 () -> new NoSuchClientException("Client with id " + clientId + " not found.", 0));
-        Set<Operation> operations = client.getOperationList();
+        Set<Operation> operations = client.getOperationList().stream()
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         if (startDate != null && endDate != null) {
             if (startDate.isBefore(endDate)) {
                 operations = operations.stream()
                         .filter(operation -> operation.getLocalDateTime().isAfter(startDate))
                         .filter(operation -> operation.getLocalDateTime().isBefore(endDate))
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
             } else {
                 throw new IllegalParameterException("Start date parameter must be before end date parameter", 0);
             }
@@ -82,13 +90,14 @@ public class AccountTransactions {
         if (startDate != null) {
             operations = operations.stream()
                     .filter(operation -> operation.getLocalDateTime().isAfter(startDate))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
         }
         if (endDate != null) {
             operations = operations.stream()
                     .filter(operation -> operation.getLocalDateTime().isBefore(endDate))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
         }
+        log.info("Client# " + clientId + ": OperationList request completed.");
         return operations;
     }
 }

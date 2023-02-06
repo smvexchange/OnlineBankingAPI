@@ -2,7 +2,6 @@ package com.smv.onlineBankingAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smv.onlineBankingAPI.builder.components.OperationType;
 import lombok.EqualsAndHashCode;
@@ -20,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "operations")
-public class Operation {
+public class Operation implements Comparable<Operation> {
 
     public Operation(LocalDateTime localDateTime,
                      Client client,
@@ -55,4 +54,8 @@ public class Operation {
     @JsonProperty(value = "amount")
     private BigDecimal cash;
 
+    @Override
+    public int compareTo(Operation operation) {
+        return localDateTime.compareTo(operation.getLocalDateTime());
+    }
 }
