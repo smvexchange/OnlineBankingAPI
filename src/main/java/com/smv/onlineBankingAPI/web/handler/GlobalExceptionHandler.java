@@ -1,6 +1,6 @@
 package com.smv.onlineBankingAPI.web.handler;
 
-import com.smv.onlineBankingAPI.web.exception.NoSuchClientException;
+import com.smv.onlineBankingAPI.web.exception.NoSuchAccountException;
 import com.smv.onlineBankingAPI.web.exception.NotEnoughMoneyException;
 import com.smv.onlineBankingAPI.web.response.BaseResponse;
 import com.smv.onlineBankingAPI.web.response.FailedResponse;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NoSuchClientException.class)
-    public ResponseEntity<BaseResponse> catchNoSuchClientException(NoSuchClientException exception) {
+    @ExceptionHandler(NoSuchAccountException.class)
+    public ResponseEntity<BaseResponse> catchNoSuchClientException(NoSuchAccountException exception) {
         log.warn("Client with requested id not found.");
         return new ResponseEntity<>(new FailedResponse(exception.getStatusCode(), exception.getMessage()), HttpStatus.NOT_FOUND);
     }
