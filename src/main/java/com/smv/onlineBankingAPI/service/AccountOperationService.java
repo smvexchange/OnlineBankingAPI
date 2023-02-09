@@ -44,7 +44,7 @@ public class AccountOperationService {
     public BaseResponse takeMoney(Long accountId, BigDecimal cash) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new NoSuchAccountException("Account with id " + accountId + " not found.", 0));
-        takeMoneyOperation(account, cash, OperationType.TAKE_MONEY);
+        cashOperation(account, cash, OperationType.TAKE_MONEY);
         log.info("Account# " + accountId + ": Take out cash successful complete. Amount: " + cash + ".");
         return new BaseResponse(1);
     }
@@ -53,7 +53,7 @@ public class AccountOperationService {
     public BaseResponse putMoney(Long accountId, BigDecimal cash) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new NoSuchAccountException("Account with id " + accountId + " not found.", 0));
-        putMoneyOperation(account, cash, OperationType.PUT_MONEY);
+        cashOperation(account, cash, OperationType.PUT_MONEY);
         log.info("Account# " + accountId + ": Cash deposit was successful complete. Amount: " + cash + ".");
         return new BaseResponse(1);
     }
@@ -64,8 +64,8 @@ public class AccountOperationService {
                 () -> new NoSuchAccountException("Account with id " + senderId + " not found.", 0));
         Account receiver = accountRepository.findById(receiverId).orElseThrow(
                 () -> new NoSuchAccountException("Account with id " + receiverId + " not found.", 0));
-        takeMoneyOperation(sender, cash, OperationType.SEND_MONEY);
-        putMoneyOperation(receiver, cash, OperationType.RECEIVE_MONEY);
+        cashOperation(sender, cash, OperationType.SEND_MONEY);
+        cashOperation(sender, cash, OperationType.RECEIVE_MONEY);
         TransferOperation transferOperation = TransferOperation.builder()
                 .id(new TransferOperationKey(senderId, receiverId))
                 .sender(sender)
@@ -110,24 +110,17 @@ public class AccountOperationService {
         return accountOperations;
     }
 
-    private void takeMoneyOperation(Account account, BigDecimal cash, OperationType operationType) {
-        if (account.getBalance().compareTo(cash) >= 0) {
+    private void cashOperation(Account account, BigDecimal cash, OperationType operationType) {
+        if (cash.compareTo(new BigDecimal(0)) <= 0) {
+            throw new IllegalParameterException("Parameter cash cannot be negative or equal to 0", 0);
+        }
+        if (operationType.equals(OperationType.PUT_MONEY) || operationType.equals(OperationType.RECEIVE_MONEY)) {
+            account.setBalance(account.getBalance().add(cash));
+        } else if (account.getBalance().compareTo(cash) >= 0) {
             account.setBalance(account.getBalance().subtract(cash));
-            AccountOperation accountOperation = AccountOperation.builder()
-                    .localDateTime(LocalDateTime.now())
-                    .account(account)
-                    .operationType(operationType)
-                    .cash(cash)
-                    .build();
-            account.setAccountOperationSet(accountOperation);
-            accountRepository.save(account);
         } else {
             throw new NotEnoughMoneyException("Account# " + account.getId() + ": Transaction failed. Not enough money.", 0);
         }
-    }
-
-    private void putMoneyOperation(Account account, BigDecimal cash, OperationType operationType) {
-        account.setBalance(account.getBalance().add(cash));
         AccountOperation accountOperation = AccountOperation.builder()
                 .localDateTime(LocalDateTime.now())
                 .account(account)
